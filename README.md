@@ -1,1 +1,1 @@
-# initcpio-overlayfs
+# mkinitcpio-overlayfs
