@@ -1,0 +1,21 @@
+#!/bin/sh
+
+ROOT_MNT="/new_root"
+OFS_DIRS="/run/archroot"
+OFS_LOWER="${OFS_DIRS}/root_ro"
+OFS_COWSPACE="${OFS_DIRS}/cowspace"
+OFS_UPPER="${OFS_COWSPACE}/upper"
+OFS_WORK="${OFS_COWSPACE}/work"
+
+run_latehook() {
+	[ -d ${OFS_LOWER} ] || mkdir -p ${OFS_LOWER}
+	mount --move ${ROOT_MNT} ${OFS_LOWER}
+
+	mkdir -p ${OFS_COWSPACE}
+	mount -t tmpfs cowspace ${OFS_COWSPACE}
+
+	[ -d ${OFS_UPPER} ] || mkdir -p ${OFS_UPPER}
+	[ -d ${OFS_WORK} ] || mkdir -p ${OFS_WORK}
+
+	mount -t overlay -o lowerdir=${OFS_LOWER},upperdir=${OFS_UPPER},workdir=${OFS_WORK} rootfs ${ROOT_MNT}
+}
